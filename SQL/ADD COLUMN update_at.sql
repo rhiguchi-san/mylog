@@ -1,0 +1,2 @@
+ALTER TABLE mylog.logs
+ADD COLUMN update_at DATETIME;
