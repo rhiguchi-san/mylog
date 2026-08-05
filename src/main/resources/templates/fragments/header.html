@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- 共通ヘッダー -->
+<header th:fragment="header">
+
+	<!-- ナビゲーションバー -->
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+		<div class="container">
+			<!-- アプリタイトル -->
+			<a class="navbar-brand" th:href="@{/logs}">
+				My Log
+			</a>
+
+			<!-- 天気表示エリア -->
+			<div class="text-white text-end">
+				<!-- 地域名 -->
+				<div th:text="${weather.area}"></div>
+				<!-- 今日の天気 -->
+				<div>
+					今日：
+					<span th:text="${weather.todayWeather}"></span>
+				</div>
+				<!-- 明日の天気 -->
+				<div>
+					明日：
+					<span th:text="${weather.tomorrowWeather}"></span>
+				</div>
+			</div>
+		</div>
+	</nav>
+</header>
+
+</html>

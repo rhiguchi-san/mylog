@@ -13,4 +13,6 @@ import com.example.mylog.entity.Log;
 public interface LogRepository extends JpaRepository<Log, Integer> {
 	/* ログを日付の昇順で全件取得する */
 	List<Log> findAllByOrderByLogDateAsc();
+
+	List<Log> findByGenreOrderByLogDateAsc(String genre);
 }

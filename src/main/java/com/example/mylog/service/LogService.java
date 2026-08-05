@@ -30,6 +30,16 @@ public class LogService {
 		return logRepository.findAllByOrderByLogDateAsc();
 	}
 
+	/* ジャンルでログを検索する */
+	public List<Log> findByGenre(String genre) {
+		/* ジャンルが未指定の場合 */
+		if (genre == null || genre.isBlank()) {
+			return logRepository.findAllByOrderByLogDateAsc();
+		}
+		/* 指定したジャンルのログを取得 */
+		return logRepository.findByGenreOrderByLogDateAsc(genre);
+	}
+	
 	/* 指定したIDのログを取得する */
 	public Optional<Log> findById(Integer id) {
 		/* 指定したIDのログを取得 */

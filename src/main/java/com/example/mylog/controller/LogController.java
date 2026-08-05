@@ -1,7 +1,10 @@
 package com.example.mylog.controller;
 
+import jakarta.validation.Valid;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +25,7 @@ import com.example.mylog.service.LogService;
 public class LogController {
 	/* ログ情報サービス */
 	private final LogService logService;
+
 	/* コンストラクタインジェクション */
 	public LogController(LogService logService) {
 		this.logService = logService;
@@ -29,9 +33,13 @@ public class LogController {
 
 	/* ログ一覧画面を表示 */
 	@GetMapping
-	public String index(Model model) {
+	public String index(
+			@RequestParam(defaultValue = "") String genre,
+			Model model) {
 		/* ログ一覧をViewへ渡す */
-		model.addAttribute("logs", logService.findAll());
+		model.addAttribute("logs", logService.findByGenre(genre));
+		/* 検索条件をViewへ渡す */
+		model.addAttribute("genre", genre);
 		/* ログ一覧画面を表示 */
 		return "logs/index";
 	}
@@ -59,14 +67,14 @@ public class LogController {
 	public String editForm(@PathVariable Integer id,
 			Model model,
 			/* 遷移元（一覧画面またはカレンダー画面）を取得 */
-			@RequestParam(required=false) String from) {
+			@RequestParam(required = false) String from) {
 		/* IDから編集対象のログを取得 */
 		Log log = logService.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("存在しないIDです"));
 		/* 編集対象のログ情報をViewへ渡す */
 		model.addAttribute("log", log);
 		/* 遷移元情報をViewへ渡す */
-		model.addAttribute("from",from);
+		model.addAttribute("from", from);
 		/* ログ編集画面を表示 */
 		return "logs/edit";
 	}
@@ -75,13 +83,18 @@ public class LogController {
 	@PostMapping("/create")
 	public String create(
 			/* 入力されたログ情報を取得 */
-			@ModelAttribute Log log,
+			@Valid @ModelAttribute Log log,
+			/* バリデーション結果を取得 */
+			BindingResult result,
 			/* 遷移元を取得 */
-			@RequestParam(required=false) String from) {
+			@RequestParam(required = false) String from) {
+		if (result.hasErrors()) {
+			return "logs/new";
+		}
 		/* ログを保存 */
 		logService.save(log);
 		/* カレンダー画面から登録した場合はカレンダーへ戻る */
-		if("calendar".equals(from)) {
+		if ("calendar".equals(from)) {
 			return "redirect:/logs/calendar";
 		}
 		/* ログ一覧画面へリダイレクト */
@@ -91,15 +104,21 @@ public class LogController {
 	/* ログを更新する */
 	@PostMapping("/{id}/update")
 	public String update(@PathVariable Integer id,
-			@ModelAttribute Log log,
+			@Valid @ModelAttribute Log log,
+			/* バリデーション結果を取得 */
+			BindingResult result,
 			/* 遷移元を取得 */
-			@RequestParam(required=false) String from) {
+			@RequestParam(required = false) String from) {
 		/* URLから取得したIDを設定 */
 		log.setId(id);
+		
+		if (result.hasErrors()) {
+			return "logs/edit";
+		}
 		/* ログを保存 */
 		logService.update(log);
 		/* カレンダー画面から編集した場合はカレンダーへ戻る */
-		if("calendar".equals(from)) {
+		if ("calendar".equals(from)) {
 			return "redirect:/logs/calendar";
 		}
 		/* ログ一覧画面へリダイレクト */

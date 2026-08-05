@@ -17,6 +17,10 @@
 </head>
 
 <body>
+	<!-- 共通ヘッダー -->
+	<div th:replace="~{fragments/header :: header}">
+	</div>
+
 
 	<div class="container mt-5">
 		<div class="card p-4">
@@ -28,33 +32,66 @@
 				<input type="hidden" th:field="*{id}">
 				<input type="hidden" th:field="*{createdAt}">
 
-				<!-- 日付 -->
+				<!-- 日付入力 -->
 				<div class="mb-3">
+					<!-- 日付ラベル -->
 					<label class="form-label">
 						日付
 					</label>
-					<input type="date" class="form-control" th:field="*{logDate}" required>
+					<!-- ログの日付を入力 -->
+					<input type="date" class="form-control" th:field="*{logDate}">
+					<!-- 日付の入力エラーを表示 -->
+					<div class="text-danger" th:errors="*{logDate}">
+					</div>
 				</div>
 
-				<!-- ジャンル -->
+				<!-- ジャンル選択 -->
 				<div class="mb-3">
-					<label class="form-label">ジャンル</label>
-
+					<!-- ジャンルラベル -->
+					<label class="form-label">
+						ジャンル
+					</label>
+					<!-- ジャンルを選択 -->
 					<select class="form-select" th:field="*{genre}">
-						<option value="予定">予定</option>
-						<option value="学習">学習</option>
-						<option value="仕事">仕事</option>
-						<option value="日記">日記</option>
-						<option value="その他">その他</option>
+						<!-- 初期表示用の選択肢 -->
+						<option value="">
+							選択してください
+						</option>
+						<!-- ジャンルの選択肢 -->
+						<option value="予定">
+							予定
+						</option>
+						<option value="学習">
+							学習
+						</option>
+						<option value="仕事">
+							仕事
+						</option>
+						<option value="日記">
+							日記
+						</option>
+						<option value="その他">
+							その他
+						</option>
 					</select>
+					<!-- ジャンルの入力エラーを表示 -->
+					<div class="text-danger" th:errors="*{genre}">
+					</div>
 				</div>
 
-				<!-- 内容 -->
-				<div class="mb-3">
-					<label class="form-label">ログ</label>
 
-					<textarea class="form-control" th:field="*{content}" rows="8">
-					</textarea>
+				<!-- ログ内容入力 -->
+				<div class="mb-3">
+					<!-- 内容ラベル -->
+					<label class="form-label">
+						ログ
+					</label>
+					<!-- ログ内容を入力 -->
+					<textarea class="form-control" th:field="*{content}" rows="8" placeholder="内容を入力してください">
+									</textarea>
+					<!-- 内容の入力エラーを表示 -->
+					<div class="text-danger" th:errors="*{content}">
+					</div>
 				</div>
 
 				<!-- ボタン -->

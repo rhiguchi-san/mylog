@@ -9,6 +9,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -32,6 +35,7 @@ public class Log {
 	/* 日付*/
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Column(name = "log_date")
+	@NotNull(message = "日付を入力してください")
 	private LocalDate logDate;
 
 	/* 作成日時 */
@@ -44,10 +48,13 @@ public class Log {
 
 	/* 種類 */
 	@Column(name = "genre")
+	@NotBlank(message = "ジャンルを選択してください")
 	private String genre;
 
 	/* 内容 */
 	@Column(name = "content")
+	@NotBlank(message = "内容を入力してください")
+	@Size(max = 500, message = "内容は500文字以内で入力してください")
 	private String content;
 
 }

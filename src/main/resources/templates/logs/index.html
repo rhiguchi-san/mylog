@@ -12,14 +12,18 @@
 </head>
 
 <body>
+	<!-- 共通ヘッダー -->
+	<div th:replace="~{fragments/header :: header}">
+	</div>
+
 	<!-- メインコンテナ -->
 	<div class="container mt-5">
+
 		<!-- カレンダー画面へ遷移 -->
-		<a th:href="@{/logs/calendar}"
-		   class="btn btn-primary">
-		カレンダー表示
+		<a th:href="@{/logs/calendar}" class="btn btn-primary">
+			カレンダー表示
 		</a>
-		
+
 		<!-- ログ一覧カード -->
 		<div class="card p-4">
 			<!-- タイトル・新規登録ボタン -->
@@ -31,7 +35,40 @@
 					新規登録
 				</a>
 			</div>
-			
+
+			<!-- ジャンル検索フォーム -->
+			<form th:action="@{/logs}" method="get" class="row g-2 mb-4">
+				<!-- ジャンル選択 -->
+				<div class="col-md-6">
+					<select name="genre" class="form-select">
+						<option value="" th:selected="${genre == ''}">
+							すべて
+						</option>
+						<option value="予定" th:selected="${genre == '予定'}">
+							予定
+						</option>
+						<option value="学習" th:selected="${genre == '学習'}">
+							学習
+						</option>
+						<option value="仕事" th:selected="${genre == '仕事'}">
+							仕事
+						</option>
+						<option value="日記" th:selected="${genre == '日記'}">
+							日記
+						</option>
+						<option value="その他" th:selected="${genre == 'その他'}">
+							その他
+						</option>
+					</select>
+				</div>
+				<div class="col-md-2">
+					<button type="submit" class="btn btn-primary w-100">
+						検索
+					</button>
+				</div>
+
+			</form>
+
 			<!-- ログ一覧テーブル -->
 			<table class="table table-bordered table-hover">
 				<!-- テーブルヘッダー -->
@@ -45,6 +82,7 @@
 						<th>操作</th>
 					</tr>
 				</thead>
+
 				<!-- テーブル本体 -->
 				<tbody>
 					<!-- ログ一覧を繰り返し表示 -->
