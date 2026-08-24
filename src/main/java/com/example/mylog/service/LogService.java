@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.mylog.entity.Log;
@@ -24,22 +26,22 @@ public class LogService {
 		this.logRepository = logRepository;
 	}
 
-	/* すべてのログを取得する */
+	/* ログを日付の昇順で取得する */
 	public List<Log> findAll() {
 		/* ログ一覧を取得 */
 		return logRepository.findAllByOrderByLogDateAsc();
 	}
 
-	/* ジャンルでログを検索する */
-	public List<Log> findByGenre(String genre) {
-		/* ジャンルが未指定の場合 */
+	/* ジャンルを指定してログを取得する */
+	public Page<Log> findByGenre(String genre, Pageable pageable) {
+		/* ジャンルが未指定の場合は全件取得 */
 		if (genre == null || genre.isBlank()) {
-			return logRepository.findAllByOrderByLogDateAsc();
+			return logRepository.findAllByOrderByLogDateAsc(pageable);
 		}
 		/* 指定したジャンルのログを取得 */
-		return logRepository.findByGenreOrderByLogDateAsc(genre);
+		return logRepository.findByGenreOrderByLogDateAsc(genre, pageable);
 	}
-	
+
 	/* 指定したIDのログを取得する */
 	public Optional<Log> findById(Integer id) {
 		/* 指定したIDのログを取得 */
@@ -60,9 +62,13 @@ public class LogService {
 
 	/* ログを更新する */
 	public void update(Log log) {
-		/* 更新内容をデータベースへ保存 */
-		log.setUpdatedAt(LocalDateTime.now());
-		logRepository.save(log);
+		/* 更新前のログをIDから取得 */
+		Optional<Log> existingLog = logRepository.findById(log.getId());
+		/* 登録日時を更新前の値に戻す */
+			log.setCreatedAt(existingLog.get().getCreatedAt());
+			/* 更新内容をデータベースへ保存 */
+			log.setUpdatedAt(LocalDateTime.now());
+			logRepository.save(log);
 	}
 
 	/* ログを削除する */

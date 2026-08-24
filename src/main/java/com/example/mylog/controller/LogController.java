@@ -2,6 +2,9 @@ package com.example.mylog.controller;
 
 import jakarta.validation.Valid;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -35,9 +38,10 @@ public class LogController {
 	@GetMapping
 	public String index(
 			@RequestParam(defaultValue = "") String genre,
+			@PageableDefault(page = 0, size = 10, sort = "id", direction = Direction.ASC) Pageable pageable,
 			Model model) {
 		/* ログ一覧をViewへ渡す */
-		model.addAttribute("logs", logService.findByGenre(genre));
+		model.addAttribute("logs", logService.findByGenre(genre, pageable));
 		/* 検索条件をViewへ渡す */
 		model.addAttribute("genre", genre);
 		/* ログ一覧画面を表示 */
@@ -46,7 +50,8 @@ public class LogController {
 
 	/* カレンダー画面を表示 */
 	@GetMapping("/calendar")
-	public String calendar(Model model) {
+	public String calendar(
+			Model model) {
 		/* ログ一覧をViewへ渡す */
 		model.addAttribute("logs", logService.findAll());
 		/* カレンダー画面を表示 */
@@ -111,7 +116,7 @@ public class LogController {
 			@RequestParam(required = false) String from) {
 		/* URLから取得したIDを設定 */
 		log.setId(id);
-		
+
 		if (result.hasErrors()) {
 			return "logs/edit";
 		}
